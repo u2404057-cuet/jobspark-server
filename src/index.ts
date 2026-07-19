@@ -5,6 +5,7 @@ import { connectDB } from './config/db';
 import { auth } from './lib/auth';
 import { toNodeHandler } from 'better-auth/node';
 import { requireAuth } from './middleware/authMiddleware';
+import jobsRouter from './routes/jobs';
 
 dotenv.config();
 
@@ -32,6 +33,8 @@ app.get('/api/health', (req: Request, res: Response) => {
 app.get('/api/me', requireAuth, (req: Request, res: Response) => {
   res.status(200).json({ user: (req as any).user });
 });
+
+app.use('/api/jobs', jobsRouter);
 
 // Start Server
 app.listen(port, () => {
