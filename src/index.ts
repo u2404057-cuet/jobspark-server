@@ -8,6 +8,7 @@ import { requireAuth } from './middleware/authMiddleware';
 import jobsRouter from './routes/jobs';
 import blogsRouter from './routes/blogs';
 import dashboardRouter from './routes/dashboard';
+import aiRouter from './routes/ai';
 
 dotenv.config();
 
@@ -39,6 +40,7 @@ app.get('/api/me', requireAuth, (req: Request, res: Response) => {
 app.use('/api/jobs', jobsRouter);
 app.use('/api/blogs', blogsRouter);
 app.use('/api/dashboard', dashboardRouter);
+app.use('/api/ai', aiRouter);
 
 // Start Server
 app.listen(port, () => {
