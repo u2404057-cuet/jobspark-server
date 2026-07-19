@@ -177,4 +177,34 @@ router.delete('/sessions/:id', requireAuth, async (req: Request, res: Response) 
   }
 });
 
+// POST /api/ai/generate-description - Generate job description
+router.post('/generate-description', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const { title, category, requirements } = req.body;
+
+    if (!title || !category || !requirements || !Array.isArray(requirements)) {
+      res.status(400).json({ error: 'Title, category, and requirements array are required' });
+      return;
+    }
+
+    const reqList = requirements.map((r: string) => `- ${r}`).join('\n');
+    
+    const prompt = `Write a professional job description for: ${title} in the ${category} department.
+Requirements:
+${reqList}
+
+Include: role overview, responsibilities (5-7 bullets), required skills, nice-to-haves, and what we offer.
+Keep it engaging, inclusive, and under 400 words.
+Return ONLY the description text, no extra commentary, no markdown code block backticks.`;
+
+    const result = await geminiModel.generateContent(prompt);
+    const text = result.response.text();
+
+    res.json({ description: text });
+  } catch (error) {
+    console.error('Generate description error:', error);
+    res.status(500).json({ error: 'Failed to generate job description' });
+  }
+});
+
 export default router;
