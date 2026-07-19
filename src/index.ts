@@ -2,6 +2,8 @@ import express, { Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
+import { auth } from './lib/auth';
+import { toNodeHandler } from 'better-auth/node';
 
 dotenv.config();
 
@@ -17,6 +19,9 @@ app.use(express.json());
 
 // Database Connection
 connectDB();
+
+// Auth Route
+app.all("/api/auth/*", toNodeHandler(auth));
 
 // Routes
 app.get('/api/health', (req: Request, res: Response) => {
