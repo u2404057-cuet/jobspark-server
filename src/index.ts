@@ -7,6 +7,7 @@ import { toNodeHandler } from 'better-auth/node';
 import { requireAuth } from './middleware/authMiddleware';
 import jobsRouter from './routes/jobs';
 import blogsRouter from './routes/blogs';
+import dashboardRouter from './routes/dashboard';
 
 dotenv.config();
 
@@ -37,6 +38,7 @@ app.get('/api/me', requireAuth, (req: Request, res: Response) => {
 
 app.use('/api/jobs', jobsRouter);
 app.use('/api/blogs', blogsRouter);
+app.use('/api/dashboard', dashboardRouter);
 
 // Start Server
 app.listen(port, () => {
