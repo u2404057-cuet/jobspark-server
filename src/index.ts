@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import { auth } from './lib/auth';
 import { toNodeHandler } from 'better-auth/node';
+import { requireAuth } from './middleware/authMiddleware';
 
 dotenv.config();
 
@@ -26,6 +27,10 @@ app.all("/api/auth/*", toNodeHandler(auth));
 // Routes
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({ status: 'ok', message: 'JobSpark API is running' });
+});
+
+app.get('/api/me', requireAuth, (req: Request, res: Response) => {
+  res.status(200).json({ user: (req as any).user });
 });
 
 // Start Server
