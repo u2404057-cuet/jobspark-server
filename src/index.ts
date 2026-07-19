@@ -42,6 +42,17 @@ app.use('/api/blogs', blogsRouter);
 app.use('/api/dashboard', dashboardRouter);
 app.use('/api/ai', aiRouter);
 
+// 404 Handler
+app.use((req: Request, res: Response) => {
+  res.status(404).json({ error: 'Endpoint not found' });
+});
+
+// Global Error Handler
+app.use((err: any, req: Request, res: Response, next: any) => {
+  console.error(err.stack);
+  res.status(500).json({ error: 'Internal Server Error' });
+});
+
 // Start Server
 app.listen(port, () => {
   console.log(`🚀 Server running on port ${port}`);
