@@ -60,6 +60,10 @@ app.use((err: any, req: Request, res: Response, next: any) => {
 });
 
 // Start Server
-app.listen(port, () => {
-  console.log(`🚀 Server running on port ${port}`);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(port, () => {
+    console.log(`🚀 Server running on port ${port}`);
+  });
+}
+
+export default app;
