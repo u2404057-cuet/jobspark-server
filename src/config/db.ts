@@ -9,16 +9,18 @@ if (!uri) {
   throw new Error('MONGODB_URI or MONGO_URI is not defined in the environment variables');
 }
 
-export const client = new MongoClient(uri);
+// Global cached connection helper for Vercel serverless environment
+let cachedClient: MongoClient | null = null;
+let cachedDb: any = null;
 
-export async function connectDB() {
-  try {
-    await client.connect();
-    console.log('✅ Connected to MongoDB');
-  } catch (error) {
-    console.error('❌ Failed to connect to MongoDB', error);
-    process.exit(1);
-  }
+if (!cachedClient) {
+  cachedClient = new MongoClient(uri);
+  cachedDb = cachedClient.db(); // Uses the database name from the connection string
 }
 
-export const db = client.db('jobspark');
+export const client = cachedClient;
+export const db = cachedDb;
+
+export async function connectDB() {
+  console.log('⚡ Database initialized (auto-connect enabled)');
+}
