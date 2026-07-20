@@ -26,7 +26,7 @@ app.use(express.json());
 connectDB();
 
 // Auth Route
-app.all("/api/auth/*", toNodeHandler(auth));
+app.all("/api/auth/{*path}", toNodeHandler(auth));
 
 // Routes
 app.get('/api/health', (req: Request, res: Response) => {
