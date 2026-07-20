@@ -18,6 +18,7 @@ const port = process.env.PORT || 8000;
 // Middleware
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:5173',
   'https://jobspark-zeta.vercel.app'
 ];
 if (process.env.CLIENT_URL) {
@@ -31,10 +32,14 @@ app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     const cleanOrigin = origin.replace(/\/$/, '');
-    if (allowedOrigins.includes(cleanOrigin)) {
+    if (
+      allowedOrigins.includes(cleanOrigin) ||
+      cleanOrigin.endsWith('.vercel.app') ||
+      cleanOrigin.startsWith('http://localhost:')
+    ) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      callback(null, false);
     }
   },
   credentials: true,
