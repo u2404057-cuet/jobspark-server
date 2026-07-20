@@ -2,7 +2,7 @@ import { Router, Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
 import { db } from '../config/db';
 import { requireAuth } from '../middleware/authMiddleware';
-import { geminiModel } from '../services/gemini.service';
+import { groq, GROQ_MODEL } from '../services/groq.service';
 
 const router = Router();
 
@@ -88,16 +88,15 @@ Help users with: resume writing, interview preparation, salary negotiation, job 
 Keep responses practical, concise, and encouraging.
 Format your responses in Markdown.`;
 
-    // Convert our history format to Gemini format
-    const geminiHistory = history.map(msg => ({
-      role: msg.role === 'user' ? 'user' : 'model',
-      parts: [{ text: msg.content }]
-    }));
-
-    const chat = geminiModel.startChat({
-      history: geminiHistory,
-      systemInstruction: { role: 'user', parts: [{ text: systemInstruction }] }
-    });
+    // Build messages including system prompt, history, and user's new message
+    const messagesList = [
+      { role: 'system' as const, content: systemInstruction },
+      ...history.map(msg => ({
+        role: (msg.role === 'user' ? 'user' : 'assistant') as 'user' | 'assistant',
+        content: msg.content
+      })),
+      { role: 'user' as const, content: message }
+    ];
 
     // Save the user message to DB
     const userMessage = { role: 'user', content: message, timestamp: new Date().toISOString() };
@@ -114,12 +113,16 @@ Format your responses in Markdown.`;
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
 
-    // Stream the response
-    const result = await chat.sendMessageStream(message);
+    // Stream the response from Groq
+    const responseStream = await groq.chat.completions.create({
+      messages: messagesList,
+      model: GROQ_MODEL,
+      stream: true,
+    });
     let fullAiResponse = '';
 
-    for await (const chunk of result.stream) {
-      const chunkText = chunk.text();
+    for await (const chunk of responseStream) {
+      const chunkText = chunk.choices[0]?.delta?.content || '';
       fullAiResponse += chunkText;
       // Write chunk to stream, format: data: {"chunk": "..."} \n\n
       res.write(`data: ${JSON.stringify({ chunk: chunkText })}\n\n`);
@@ -197,8 +200,11 @@ Include: role overview, responsibilities (5-7 bullets), required skills, nice-to
 Keep it engaging, inclusive, and under 400 words.
 Return ONLY the description text, no extra commentary, no markdown code block backticks.`;
 
-    const result = await geminiModel.generateContent(prompt);
-    const text = result.response.text();
+    const chatCompletion = await groq.chat.completions.create({
+      messages: [{ role: 'user', content: prompt }],
+      model: GROQ_MODEL,
+    });
+    const text = chatCompletion.choices[0]?.message?.content || '';
 
     res.json({ description: text });
   } catch (error) {
