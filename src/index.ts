@@ -53,8 +53,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Database Connection
-connectDB();
+// Database Connection Middleware
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    console.error('Database middleware error:', err);
+  }
+  next();
+});
 
 // Auth Route
 app.all("/api/auth/{*path}", toNodeHandler(auth));

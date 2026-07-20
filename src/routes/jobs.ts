@@ -40,8 +40,9 @@ router.get('/', async (req: Request, res: Response) => {
     const total = await db.collection('jobs').countDocuments(query);
 
     res.json({ jobs, total, page: parseInt(page as string), limit: parseInt(limit as string) });
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch jobs' });
+  } catch (error: any) {
+    console.error('Error in GET /api/jobs:', error);
+    res.status(500).json({ error: 'Failed to fetch jobs', message: error?.message });
   }
 });
 
