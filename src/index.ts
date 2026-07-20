@@ -22,6 +22,12 @@ app.use(cors({
 }));
 app.use(express.json());
 
+// Request Logger
+app.use((req, res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
+
 // Database Connection
 connectDB();
 
@@ -49,8 +55,8 @@ app.use((req: Request, res: Response) => {
 
 // Global Error Handler
 app.use((err: any, req: Request, res: Response, next: any) => {
-  console.error(err.stack);
-  res.status(500).json({ error: 'Internal Server Error' });
+  console.error('[Server Error]', err);
+  res.status(500).json({ error: err.message || 'Internal Server Error', details: err });
 });
 
 // Start Server
