@@ -16,9 +16,29 @@ const app = express();
 const port = process.env.PORT || 8000;
 
 // Middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://jobspark-zeta.vercel.app'
+];
+if (process.env.CLIENT_URL) {
+  const cleanUrl = process.env.CLIENT_URL.replace(/\/$/, '');
+  if (!allowedOrigins.includes(cleanUrl)) {
+    allowedOrigins.push(cleanUrl);
+  }
+}
+
 app.use(cors({
-  origin: process.env.CLIENT_URL || 'http://localhost:3000',
-  credentials: true
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    const cleanOrigin = origin.replace(/\/$/, '');
+    if (allowedOrigins.includes(cleanOrigin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
 app.use(express.json());
 
