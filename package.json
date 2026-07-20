@@ -15,7 +15,6 @@
   "type": "commonjs",
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.6.23",
-    "@google/generative-ai": "^0.24.1",
     "better-auth": "^1.6.23",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
