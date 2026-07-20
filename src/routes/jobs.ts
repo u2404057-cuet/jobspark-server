@@ -45,10 +45,24 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
+// GET /api/jobs/my-jobs - List current user's jobs (Must be defined before /:id)
+router.get('/my-jobs', requireAuth, async (req: Request, res: Response) => {
+  try {
+    const userId = (req as any).user.id;
+    const jobs = await db.collection('jobs')
+      .find({ postedBy: userId })
+      .sort({ createdAt: -1 })
+      .toArray();
+    res.json(jobs);
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch your jobs' });
+  }
+});
+
 // GET /api/jobs/:id - Single job details
 router.get('/:id', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     if (!ObjectId.isValid(id)) {
       res.status(400).json({ error: 'Invalid ID' });
       return;
@@ -75,7 +89,7 @@ router.get('/:id', async (req: Request, res: Response) => {
 // GET /api/jobs/related/:id - Related jobs
 router.get('/related/:id', async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     if (!ObjectId.isValid(id)) {
       res.status(400).json({ error: 'Invalid ID' });
       return;
@@ -102,20 +116,6 @@ router.get('/related/:id', async (req: Request, res: Response) => {
   }
 });
 
-// GET /api/jobs/my-jobs - List current user's jobs
-router.get('/my-jobs', requireAuth, async (req: Request, res: Response) => {
-  try {
-    const userId = (req as any).user.id;
-    const jobs = await db.collection('jobs')
-      .find({ postedBy: userId })
-      .sort({ createdAt: -1 })
-      .toArray();
-    res.json(jobs);
-  } catch (error) {
-    res.status(500).json({ error: 'Failed to fetch your jobs' });
-  }
-});
-
 // POST /api/jobs - Create new job
 router.post('/', requireAuth, async (req: Request, res: Response) => {
   try {
@@ -137,7 +137,7 @@ router.post('/', requireAuth, async (req: Request, res: Response) => {
 // DELETE /api/jobs/:id - Delete own job
 router.delete('/:id', requireAuth, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const userId = (req as any).user.id;
     
     if (!ObjectId.isValid(id)) {
@@ -164,7 +164,7 @@ router.delete('/:id', requireAuth, async (req: Request, res: Response) => {
 // PATCH /api/jobs/:id/status - Toggle open/closed
 router.patch('/:id/status', requireAuth, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const { status } = req.body;
     const userId = (req as any).user.id;
     

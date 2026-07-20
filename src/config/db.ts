@@ -3,10 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const uri = process.env.MONGODB_URI;
+const uri = process.env.MONGODB_URI || process.env.MONGO_URI;
 
 if (!uri) {
-  throw new Error('MONGODB_URI is not defined in the environment variables');
+  throw new Error('MONGODB_URI or MONGO_URI is not defined in the environment variables');
 }
 
 export const client = new MongoClient(uri);

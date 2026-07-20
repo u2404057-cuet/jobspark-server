@@ -24,7 +24,7 @@ router.get('/sessions', requireAuth, async (req: Request, res: Response) => {
 // GET /api/ai/sessions/:id - Get a specific chat session with its messages
 router.get('/sessions/:id', requireAuth, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const userId = (req as any).user.id;
 
     if (!ObjectId.isValid(id)) {
@@ -59,7 +59,7 @@ router.post('/chat', requireAuth, async (req: Request, res: Response) => {
   }
 
   try {
-    let currentSessionId = sessionId;
+    let currentSessionId = sessionId as string | undefined;
     let history: any[] = [];
 
     if (currentSessionId) {
@@ -102,9 +102,9 @@ Format your responses in Markdown.`;
     // Save the user message to DB
     const userMessage = { role: 'user', content: message, timestamp: new Date().toISOString() };
     await db.collection('chatSessions').updateOne(
-      { _id: new ObjectId(currentSessionId) },
+      { _id: new ObjectId(currentSessionId as string) },
       { 
-        $push: { messages: userMessage },
+        $push: { messages: userMessage } as any,
         $set: { updatedAt: new Date().toISOString() }
       }
     );
@@ -128,9 +128,9 @@ Format your responses in Markdown.`;
     // After stream is done, save AI message to DB
     const aiMessage = { role: 'assistant', content: fullAiResponse, timestamp: new Date().toISOString() };
     await db.collection('chatSessions').updateOne(
-      { _id: new ObjectId(currentSessionId) },
+      { _id: new ObjectId(currentSessionId as string) },
       { 
-        $push: { messages: aiMessage },
+        $push: { messages: aiMessage } as any,
         $set: { updatedAt: new Date().toISOString() }
       }
     );
@@ -153,7 +153,7 @@ Format your responses in Markdown.`;
 // DELETE /api/ai/sessions/:id - Delete a session
 router.delete('/sessions/:id', requireAuth, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id as string;
     const userId = (req as any).user.id;
     
     if (!ObjectId.isValid(id)) {
