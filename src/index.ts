@@ -3,14 +3,14 @@ dotenv.config();
 
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import { connectDB } from './config/db';
-import { auth } from './lib/auth';
+import { connectDB } from './config/db.js';
+import { auth } from './lib/auth.js';
 import { toNodeHandler } from 'better-auth/node';
-import { requireAuth } from './middleware/authMiddleware';
-import jobsRouter from './routes/jobs';
-import blogsRouter from './routes/blogs';
-import dashboardRouter from './routes/dashboard';
-import aiRouter from './routes/ai';
+import { requireAuth } from './middleware/authMiddleware.js';
+import jobsRouter from './routes/jobs.js';
+import blogsRouter from './routes/blogs.js';
+import dashboardRouter from './routes/dashboard.js';
+import aiRouter from './routes/ai.js';
 
 const app = express();
 const port = process.env.PORT || 8000;

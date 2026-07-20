@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=esm --outfile=api/index.js --external:express --external:cors --external:dotenv --external:mongodb --external:better-auth --external:better-auth/node --external:better-auth/adapters/mongodb --external:groq-sdk",
+    "build": "tsc",
     "start": "node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
