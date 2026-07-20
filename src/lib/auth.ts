@@ -1,9 +1,15 @@
 import { betterAuth } from 'better-auth';
-import { mongodbAdapter } from '@better-auth/mongo-adapter';
-import { db } from '../config/db';
+import { mongodbAdapter } from 'better-auth/adapters/mongodb';
+import { db, client } from '../config/db';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 export const auth = betterAuth({
-  database: mongodbAdapter(db),
+  database: mongodbAdapter(db, {
+    client: client
+  }),
+  trustedOrigins: [process.env.CLIENT_URL || "http://localhost:3000"],
   emailAndPassword: {
     enabled: true,
   },

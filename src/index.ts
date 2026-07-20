@@ -1,6 +1,8 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express, { Request, Response } from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import { auth } from './lib/auth';
 import { toNodeHandler } from 'better-auth/node';
@@ -9,8 +11,6 @@ import jobsRouter from './routes/jobs';
 import blogsRouter from './routes/blogs';
 import dashboardRouter from './routes/dashboard';
 import aiRouter from './routes/ai';
-
-dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 8000;
