@@ -12,7 +12,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module",
+  "type": "commonjs",
   "dependencies": {
     "@better-auth/mongo-adapter": "^1.6.23",
     "better-auth": "^1.6.23",
