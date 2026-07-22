@@ -14,7 +14,8 @@ export const auth = betterAuth({
     process.env.CLIENT_URL || "http://localhost:3000",
     "http://localhost:3000",
     "http://localhost:5173",
-    "https://jobspark-zeta.vercel.app"
+    "https://jobspark-zeta.vercel.app",
+    "https://jobspark-server.vercel.app"
   ],
   emailAndPassword: {
     enabled: true,
