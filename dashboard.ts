@@ -1,11 +1,10 @@
 import { Router, Request, Response } from 'express';
-import { db } from '../config/db.js';
-import { requireAuth } from '../middleware/authMiddleware.js';
+import { db } from './db.js';
+import { requireAuth } from './authMiddleware.js';
 
 const router = Router();
 
-// GET /api/dashboard/stats - Get user's dashboard statistics
-router.get('/stats', requireAuth, async (req: Request, res: Response) => {
+const getStats = async (req: Request, res: Response) => {
   try {
     const userId = (req as any).user.id;
     
@@ -39,6 +38,9 @@ router.get('/stats', requireAuth, async (req: Request, res: Response) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch dashboard stats' });
   }
-});
+};
+
+router.get('/', requireAuth, getStats);
+router.get('/stats', requireAuth, getStats);
 
 export default router;

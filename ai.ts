@@ -1,8 +1,8 @@
 import { Router, Request, Response } from 'express';
 import { ObjectId } from 'mongodb';
-import { db } from '../config/db.js';
-import { requireAuth } from '../middleware/authMiddleware.js';
-import { groq, GROQ_MODEL } from '../services/groq.service.js';
+import { db } from './db.js';
+import { requireAuth } from './authMiddleware.js';
+import { groq, GROQ_MODEL } from './groq.service.js';
 
 const router = Router();
 

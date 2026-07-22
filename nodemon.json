@@ -1,0 +1,7 @@
+{
+  "watch": ["*.ts", ".env"],
+  "ext": "ts,json",
+  "execMap": {
+    "ts": "tsx"
+  }
+}
