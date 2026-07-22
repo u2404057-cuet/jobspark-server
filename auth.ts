@@ -17,6 +17,12 @@ export const auth = betterAuth({
     "https://jobspark-zeta.vercel.app",
     "https://jobspark-server.vercel.app"
   ],
+  advanced: {
+    defaultCookieAttributes: {
+      sameSite: "none",
+      secure: true,
+    },
+  },
   emailAndPassword: {
     enabled: true,
   },
